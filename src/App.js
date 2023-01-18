@@ -9,9 +9,14 @@ function App() {
     <>
       <ToastContainer />
       <div className="app">
-        <RootContextProvider>
-          <Routes />
-        </RootContextProvider>
+        <div className="main-app">
+          <RootContextProvider>
+            <Routes />
+          </RootContextProvider>
+        </div>
+        <div className="fallback">
+          This website can only be used by desktop or tablet users
+        </div>
       </div>
     </>
   );
