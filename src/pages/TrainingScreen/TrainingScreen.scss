@@ -1,0 +1,77 @@
+#training-screen {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+
+  .close {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(95, 95, 95);
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .small-dot {
+    width: 5mm;
+    height: 5mm;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    animation: small-dot 0.5s linear 0s infinite alternate;
+  }
+
+  .preview {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    transform: translateY(-100%);
+
+    .preview-icon {
+      display: none;
+    }
+
+    .confidence-icon {
+      display: none;
+      cursor: pointer;
+      opacity: 0;
+    }
+  }
+}
+
+// @keyframes small-dot {
+//   0% {
+//     opacity: 1;
+//   }
+
+//   25% {
+//     opacity: 0;
+//   }
+
+//   75% {
+//     opacity: 1;
+//   }
+
+//   100% {
+//     opacity: 0;
+//   }
+// }
+
+@keyframes small-dot {
+  from,
+  to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}

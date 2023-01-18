@@ -1,0 +1,23 @@
+.selector-item {
+  background-color: #707070;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  cursor: pointer;
+
+  input {
+    display: none;
+  }
+
+  .checkmark {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #fff;
+  }
+
+  input:checked + .checkmark {
+    background-color: rgb(46, 46, 46);
+  }
+}

@@ -1,0 +1,17 @@
+.stimulus {
+  display: flex;
+  gap: 30px;
+
+  & > * {
+    width: 50%;
+  }
+
+  .left {
+    border-right: 1px solid #fff;
+    padding-right: 30px;
+    overflow: hidden;
+  }
+
+  .right {
+  }
+}

@@ -1,0 +1,12 @@
+.selector {
+  display: flex;
+
+  label {
+    margin-bottom: 0;
+  }
+
+  .selector-item {
+    flex-grow: 1;
+    text-align: center;
+  }
+}
