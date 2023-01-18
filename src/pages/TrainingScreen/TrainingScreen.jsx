@@ -18,6 +18,7 @@ const TrainingScreen = () => {
   const interval1Ref = useRef();
   const interval2Ref = useRef();
   const timeout1Ref = useRef();
+  const timeout2Ref = useRef();
   const confidenceRef = useRef();
   const previewWrapRef = useRef();
   const previewRef = useRef();
@@ -35,6 +36,7 @@ const TrainingScreen = () => {
     clearInterval(interval1Ref.current);
     clearInterval(interval2Ref.current);
     clearTimeout(timeout1Ref.current);
+    clearTimeout(timeout2Ref.current);
   };
 
   const startTest = useCallback(() => {
@@ -51,7 +53,7 @@ const TrainingScreen = () => {
       totalTime = form.maxTrainingDuration * 60 * 1000;
     }
 
-    setTimeout(function () {
+    timeout2Ref.current = setTimeout(function () {
       endTest();
       // stopTest();
     }, totalTime);
@@ -144,7 +146,13 @@ const TrainingScreen = () => {
       </div> */}
 
       <div id="training-screen" ref={trainingScreenRef}>
-        <div onClick={endTest} className="close">
+        <div
+          onClick={() => {
+            stopTest();
+            navigate("/");
+          }}
+          className="close"
+        >
           ❌
         </div>
 

@@ -17,6 +17,10 @@
         width: 300px;
         flex-shrink: 0;
 
+        @media screen and (max-width: 991px) {
+          display: none;
+        }
+
         .point {
           margin-bottom: 10px;
           display: flex;
