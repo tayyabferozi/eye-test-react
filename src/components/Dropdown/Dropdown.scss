@@ -1,0 +1,111 @@
+.dropdown-big {
+  position: relative;
+
+  .dropdown-big__main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 14px 14px 20px;
+    min-width: 160px;
+    background-color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+
+    .text {
+      color: #000;
+    }
+  }
+
+  .dropdown-big__options {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    border-radius: 0 0 4px 4px;
+    display: none;
+    border: 1px solid $color1;
+    box-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
+    background-color: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    z-index: 2;
+    max-height: 200px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+      border-radius: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      width: 6px;
+      background-color: transparent;
+    }
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .option {
+      padding: 7px 20px;
+      background-color: #fff;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      color: #000;
+
+      @include transitioned;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid $color1;
+      }
+
+      &:hover:not(.label) {
+        cursor: pointer;
+        background-color: rgba(140, 149, 159, 0.2);
+      }
+
+      img {
+        width: 20px;
+      }
+    }
+
+    &.with-checkmarks {
+      .option {
+        &:not(.label) {
+          padding-left: 40px;
+
+          &.active {
+            &::after {
+              content: url("../../assets/vectors/tick.svg");
+              position: absolute;
+              top: calc(50% + 2px);
+              transform: translateY(-50%);
+
+              width: 14px;
+              left: 15px;
+              // filter: invert(37%) sepia(2%) saturate(5729%) hue-rotate(181deg)
+              //   brightness(97%) contrast(87%);
+              filter: invert(57%) sepia(9%) saturate(705%) hue-rotate(177deg)
+                brightness(98%) contrast(91%);
+            }
+          }
+        }
+
+        &.label {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 9px 15px;
+
+          .cross {
+            width: 12px;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}

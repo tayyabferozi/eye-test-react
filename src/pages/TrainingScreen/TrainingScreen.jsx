@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 import { db } from "../../firebase";
 import useRootContext from "../../hooks/useRootContext";
 import splitNumber from "../../utils/splitNumber";
-import "./TrainingScreen.scss";
 import shuffle from "../../utils/shuffle";
+import "./TrainingScreen.scss";
 
 const opacities = [0.33, 0.66, 1];
 

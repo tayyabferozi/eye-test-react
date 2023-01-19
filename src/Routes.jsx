@@ -16,7 +16,8 @@ const AppRoutes = () => {
           <Route path="new-training" element={<NewTraining />} />
           <Route path="training-start" element={<TrainingScreen />} />
           <Route path="training-stats">
-            <Route path=":id" element={<TrainingStats />} />
+            <Route index element={<TrainingStats />} />
+            <Route path=":id" element={<TrainingStats single />} />
           </Route>
         </Route>
       </Routes>

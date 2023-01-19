@@ -3,10 +3,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 140px);
+    flex-direction: column;
+    min-height: calc(100vh - 140px);
   }
 
   .graph {
     max-width: 800px;
+  }
+
+  .dropdowns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
   }
 }

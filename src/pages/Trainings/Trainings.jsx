@@ -1,6 +1,12 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { EyeIcon, PencilIcon, TrashIcon } from "@primer/octicons-react";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
 import useRootContext from "../../hooks/useRootContext";
@@ -52,10 +58,11 @@ const Training = () => {
 
     setIsLoading(true);
     const querySnapshot = await getDocs(collection(db, "trainings"));
+    const sanitizedData = [];
     querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      setItems((prevState) => [...prevState, { id: doc.id, ...data }]);
+      sanitizedData.push({ id: doc.id, ...doc.data() });
     });
+    setItems(sanitizedData);
     setIsLoading(false);
   }, []);
 
@@ -72,7 +79,7 @@ const Training = () => {
           {isLoading ? (
             <h6 className="text-center">Loading...</h6>
           ) : (
-            <div className="table-container">
+            <div className="table-container mt-30">
               <table>
                 <thead>
                   <tr>
@@ -134,7 +141,9 @@ const Training = () => {
         </div>
 
         <div className="bottom-nav">
-          <Button secondary>Graph</Button>
+          <Button to="/training-stats" secondary>
+            Graph
+          </Button>
           <Button to="/new-training" primary>
             New Training
           </Button>
