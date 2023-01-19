@@ -22,7 +22,7 @@ ChartJS.register(
 export default function App({ labels, datasets }) {
   const options = {
     maintainAspectRatio: false,
-    barThickness: 50,
+    barThickness: 20,
     borderWidth: 2,
     plugins: {
       legend: {

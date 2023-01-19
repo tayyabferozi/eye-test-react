@@ -8,7 +8,9 @@
   }
 
   .graph {
-    max-width: 800px;
+    &:not(.single) {
+      width: 100% !important;
+    }
   }
 
   .dropdowns {

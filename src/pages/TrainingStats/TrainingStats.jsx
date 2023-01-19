@@ -8,6 +8,7 @@ import {
   getDocs,
   where,
 } from "firebase/firestore";
+import clsx from "clsx";
 import { toast } from "react-toastify";
 import Button from "../../components/Button";
 
@@ -221,10 +222,10 @@ const TrainingStats = ({ single }) => {
 
   const getItemsData = async function (start, end) {
     if (!start || !end) {
-      console.log("RETURNING");
       setIsLoading(false);
       return;
     }
+
     const docRef = collection(db, "trainings");
     const q = query(
       docRef,
@@ -234,7 +235,6 @@ const TrainingStats = ({ single }) => {
 
     setIsLoading(true);
     const querySnapshot = await getDocs(q);
-    console.log(querySnapshot);
     setData(querySnapshot, true);
     setIsLoading(false);
   };
@@ -245,7 +245,7 @@ const TrainingStats = ({ single }) => {
     const days = daysState;
 
     const startDate = new Date(`${month} ${days.split("-")[0]}, ${year} `);
-    const endDate = new Date(`${month} ${days.split("-")[1]}, ${year} `);
+    const endDate = new Date(`${month} ${+days.split("-")[1] + 1}, ${year} `);
 
     getItemsData(startDate, endDate);
   };
@@ -294,7 +294,7 @@ const TrainingStats = ({ single }) => {
         </div>
       )}
       {!isLoading ? (
-        <div className="graph">
+        <div className={clsx("graph", { single })}>
           <Graph labels={labels} datasets={datasets} />
         </div>
       ) : (
