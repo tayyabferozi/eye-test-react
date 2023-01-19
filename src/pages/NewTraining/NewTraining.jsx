@@ -93,7 +93,7 @@ const NewTraining = () => {
   useEffect(() => {
     if (searchParams.get("form") === "edit") return;
     dispatch({ type: actionTypes.RESET_FORM });
-  }, []);
+  }, [dispatch, searchParams]);
 
   return (
     <>

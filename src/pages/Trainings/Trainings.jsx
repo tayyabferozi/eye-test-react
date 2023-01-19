@@ -30,8 +30,6 @@ const Training = () => {
 
   const editSaved = (data) => {
     delete data.id;
-    console.log("data");
-    console.log(data);
     dispatch({
       type: actionTypes.SET_FORM_VALUES,
       payload: data,
@@ -42,6 +40,7 @@ const Training = () => {
   const deleteItem = async (id) => {
     dataFetchedRef.current = false;
     setItems([]);
+    setIsLoading(true);
     await deleteDoc(doc(db, "trainings", id));
     toast.success("Item deleted succesfully!");
     getData();
@@ -78,7 +77,7 @@ const Training = () => {
                 <thead>
                   <tr>
                     <th>Name</th>
-                    <th>Last Training</th>
+                    <th>Date</th>
                     <th>Target Eye</th>
                     <th>Performance</th>
                     <th>Expected Duration</th>
@@ -114,7 +113,7 @@ const Training = () => {
                             <Button onClick={() => startSaved(el)} primary>
                               Start
                             </Button>
-                            <Button secondary>
+                            <Button secondary to={`/training-stats/${el.id}`}>
                               <EyeIcon size={16} />
                             </Button>
                             <Button secondary onClick={() => editSaved(el)}>

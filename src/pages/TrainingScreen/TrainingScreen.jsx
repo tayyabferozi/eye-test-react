@@ -1,11 +1,15 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, addDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 import { db } from "../../firebase";
 import useRootContext from "../../hooks/useRootContext";
+import splitNumber from "../../utils/splitNumber";
 import "./TrainingScreen.scss";
-import { toast } from "react-toastify";
+import shuffle from "../../utils/shuffle";
+
+const opacities = [0.33, 0.66, 1];
 
 const TrainingScreen = () => {
   const navigate = useNavigate();
@@ -14,6 +18,7 @@ const TrainingScreen = () => {
   const isFormSavedRef = useRef(false);
   const dotsShownRef = useRef(0);
   const dotsClickedRef = useRef(0);
+  const dotsClickedDetailsRef = useRef([]);
   const isCircleClickedRef = useRef(false); // for each cycle, track if already clicked
   const interval1Ref = useRef();
   const interval2Ref = useRef();
@@ -24,12 +29,43 @@ const TrainingScreen = () => {
   const previewRef = useRef();
   const testState = useRef();
   const trainingScreenRef = useRef();
+  const opacitiesRef = useRef();
+  const currOpacityRef = useRef();
+  const splittedRef = useRef([]);
+  const lightDotsClickedRef = useRef(0);
+  const optimalDotsClickedRef = useRef(0);
+  const brightDotsClickedRef = useRef(0);
+
+  const saveData = useCallback(
+    async function () {
+      if (isFormSavedRef.current) return;
+      isFormSavedRef.current = true;
+      try {
+        await addDoc(collection(db, "trainings"), {
+          ...form,
+          totalDots: dotsShownRef.current,
+          clickedDots: dotsClickedRef.current,
+          date: new Date(),
+          opacitiesDistribution: opacitiesRef.current,
+          dotsClickedDetails: dotsClickedDetailsRef.current,
+          splitted: splittedRef.current,
+          lightDotsClicked: lightDotsClickedRef.current,
+          optimalDotsClicked: optimalDotsClickedRef.current,
+          brightDotsClicked: brightDotsClickedRef.current,
+        });
+        toast.success("Data saved succesfully!");
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [form]
+  );
 
   const endTest = useCallback(() => {
     stopTest();
     saveData();
     navigate("/", { replace: true });
-  }, [navigate]);
+  }, [navigate, saveData]);
 
   const stopTest = () => {
     testState.current = "stopped";
@@ -45,13 +81,36 @@ const TrainingScreen = () => {
     let totalTime = 0;
     const cycleTime = form.responseTime + form.displayTime;
 
+    let splitted;
+
     if (form.durationOn === "dots") {
       const totalTimeSec = (+form.maxTrainingDots + 1) * cycleTime;
 
       totalTime = totalTimeSec * 1000;
+
+      splitted = splitNumber(+form.maxTrainingDots, 3);
     } else {
       totalTime = form.maxTrainingDuration * 60 * 1000;
+
+      splitted = splitNumber(
+        (+form.maxTrainingDuration * 60) / +form.displayTime +
+          +form.responseTime,
+        3
+      );
     }
+
+    splittedRef.current = splitted;
+
+    let opacitiesArray = [];
+
+    splitted.forEach((el, idx) => {
+      const op = new Array(el).fill(opacities[idx]);
+      opacitiesArray = [...opacitiesArray, ...op];
+    });
+
+    const shuffledArr = shuffle(opacitiesArray);
+
+    opacitiesRef.current = shuffledArr;
 
     timeout2Ref.current = setTimeout(function () {
       endTest();
@@ -60,6 +119,11 @@ const TrainingScreen = () => {
 
     interval1Ref.current = setInterval(function () {
       previewRef.current.style.display = "block";
+      currOpacityRef.current =
+        (opacitiesRef.current && opacitiesRef.current[dotsShownRef.current]) ||
+        1;
+      console.log(currOpacityRef.current);
+      previewRef.current.style.opacity = currOpacityRef.current;
       confidenceRef.current.style.display = "block";
       isCircleClickedRef.current = false;
 
@@ -80,33 +144,20 @@ const TrainingScreen = () => {
         confidenceRef.current.style.display = "none";
       }, form.responseTime * 1000);
     }, cycleTime * 1000);
-  }, [
-    form,
-    // endTest
-  ]);
+  }, [form, endTest]);
 
   const circleClickHandler = () => {
     if (!isCircleClickedRef.current) {
       isCircleClickedRef.current = true;
       dotsClickedRef.current += 1;
+      dotsClickedDetailsRef.current.push(currOpacityRef.current);
+
+      if (currOpacityRef.current === 0.33) lightDotsClickedRef.current += 1;
+      else if (currOpacityRef.current === 0.66)
+        optimalDotsClickedRef.current += 1;
+      else if (currOpacityRef.current === 1) brightDotsClickedRef.current += 1;
     }
   };
-
-  async function saveData() {
-    if (isFormSavedRef.current) return;
-    isFormSavedRef.current = true;
-    try {
-      await addDoc(collection(db, "trainings"), {
-        ...form,
-        totalDots: dotsShownRef.current,
-        clickedDots: dotsClickedRef.current,
-        date: new Date(),
-      });
-      toast.success("Data saved succesfully!");
-    } catch (err) {
-      console.log(err);
-    }
-  }
 
   useEffect(() => {
     if (previewRef && confidenceRef && testState.current !== "started")
@@ -115,6 +166,8 @@ const TrainingScreen = () => {
 
   useEffect(() => {
     const elem = trainingScreenRef.current;
+
+    if (!elem.current) return;
 
     if (elem.requestFullscreen) {
       elem.requestFullscreen();

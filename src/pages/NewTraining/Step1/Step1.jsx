@@ -8,8 +8,6 @@ import SelectorItem from "../../../components/SelectorItem";
 const Step1 = ({ errorsState, inputChangeHandler }) => {
   const { form } = useRootContext();
 
-  console.log(form);
-
   return (
     <div>
       <div className="form">

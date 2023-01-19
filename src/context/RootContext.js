@@ -9,7 +9,6 @@ const reducer = (state, action) => {
     case actionTypes.ADD_FORM_VALUES:
       return { ...state, form: { ...state.form, ...action.payload } };
     case actionTypes.SET_FORM_VALUES:
-      console.log(action.payload);
       return {
         ...state,
         form: { ...action.payload },

@@ -5,6 +5,7 @@ import MainLayout from "./layouts/MainLayout";
 import NewTraining from "./pages/NewTraining";
 import Trainings from "./pages/Trainings";
 import TrainingScreen from "./pages/TrainingScreen";
+import TrainingStats from "./pages/TrainingStats/TrainingStats";
 
 const AppRoutes = () => {
   return (
@@ -12,8 +13,11 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route path="/" element={<Trainings />} />
-          <Route path="/new-training" element={<NewTraining />} />
-          <Route path="/training-start" element={<TrainingScreen />} />
+          <Route path="new-training" element={<NewTraining />} />
+          <Route path="training-start" element={<TrainingScreen />} />
+          <Route path="training-stats">
+            <Route path=":id" element={<TrainingStats />} />
+          </Route>
         </Route>
       </Routes>
     </Router>
