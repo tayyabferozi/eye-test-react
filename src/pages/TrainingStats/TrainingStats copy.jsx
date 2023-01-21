@@ -142,72 +142,23 @@ const TrainingStats = ({ single }) => {
     const labelsData = [];
     const datasetsData = JSON.parse(JSON.stringify(datasetStructure));
 
-    const aggregatedData = {};
-
     querySnapshot.forEach((doc) => {
       const realData = snapshot ? doc.data() : doc;
-      const parsedDate = new Date(
-        realData.date.seconds * 1000
-      ).toLocaleDateString();
+      labelsData.push(new Date(realData.date.seconds * 1000).toLocaleString());
+      datasetsData[0].data.push(realData.lightDotsClicked);
+      datasetsData[1].data.push(realData.optimalDotsClicked);
+      datasetsData[2].data.push(realData.brightDotsClicked);
 
-      if (isEmpty(aggregatedData[parsedDate])) {
-        aggregatedData[parsedDate] = {};
-        aggregatedData[parsedDate].lightDotsClicked = 0;
-        aggregatedData[parsedDate].optimalDotsClicked = 0;
-        aggregatedData[parsedDate].brightDotsClicked = 0;
-
-        aggregatedData[parsedDate].lightDotsTotal = 0;
-        aggregatedData[parsedDate].optimalDotsTotal = 0;
-        aggregatedData[parsedDate].brightDotsTotal = 0;
-
-        aggregatedData[parsedDate].lightDotsMissed = 0;
-        aggregatedData[parsedDate].optimalDotsMissed = 0;
-        aggregatedData[parsedDate].brightDotsMissed = 0;
-      }
-
-      aggregatedData[parsedDate].lightDotsClicked += realData.lightDotsClicked;
-      aggregatedData[parsedDate].optimalDotsClicked +=
-        realData.optimalDotsClicked;
-      aggregatedData[parsedDate].brightDotsClicked +=
-        realData.brightDotsClicked;
-
-      aggregatedData[parsedDate].lightDotsTotal += realData.splitted[0];
-      aggregatedData[parsedDate].optimalDotsTotal += realData.splitted[1];
-      aggregatedData[parsedDate].brightDotsTotal += realData.splitted[2];
-
-      aggregatedData[parsedDate].lightDotsMissed +=
-        realData.splitted[0] - realData.lightDotsClicked;
-      aggregatedData[parsedDate].optimalDotsMissed +=
-        realData.splitted[1] - realData.optimalDotsClicked;
-      aggregatedData[parsedDate].brightDotsMissed +=
-        realData.splitted[2] - realData.brightDotsClicked;
+      datasetsData[3].data.push(
+        realData.splitted[0] - realData.lightDotsClicked
+      );
+      datasetsData[4].data.push(
+        realData.splitted[1] - realData.optimalDotsClicked
+      );
+      datasetsData[5].data.push(
+        realData.splitted[1] - realData.brightDotsClicked
+      );
     });
-
-    for (const key in aggregatedData) {
-      if (Object.hasOwnProperty.call(aggregatedData, key)) {
-        const element = aggregatedData[key];
-        labelsData.push(key);
-        datasetsData[0].data.push(
-          (element.lightDotsClicked / element.lightDotsTotal) * 100
-        );
-        datasetsData[1].data.push(
-          (element.optimalDotsClicked / element.optimalDotsTotal) * 100
-        );
-        datasetsData[2].data.push(
-          (element.brightDotsClicked / element.brightDotsTotal) * 100
-        );
-
-        datasetsData[3].data.push(
-          (element.lightDotsMissed / element.lightDotsTotal) * 100
-        );
-        datasetsData[4].data.push(
-          (element.optimalDotsMissed / element.optimalDotsTotal) * 100
-        );
-        datasetsData[5].data.push(
-          (element.brightDotsMissed / element.brightDotsTotal) * 100
-        );
-      }
-    }
 
     setLabels(labelsData);
     setDatasets(datasetsData);
@@ -287,17 +238,17 @@ const TrainingStats = ({ single }) => {
             <div className="text-center">Dates Loading...</div>
           ) : (
             <div className="mb-30">
-              <div className="d-flex justify-content-center align-items-center p-3 gap-3">
-                <div className="dropdowns">
-                  <Dropdown
-                    withCheckmarks
-                    labelText="Select Month"
-                    defaultValue="Select date"
-                    options={dateSelectionState}
-                    onChoose={dateChangeHandler}
-                  />
-                </div>
+              <div className="dropdowns">
+                <Dropdown
+                  withCheckmarks
+                  labelText="Select Month"
+                  defaultValue="Select date"
+                  options={dateSelectionState}
+                  onChoose={dateChangeHandler}
+                />
+              </div>
 
+              <div className="d-flex justify-content-center p-3">
                 <Button primary onClick={filterHandler}>
                   Apply
                 </Button>
@@ -307,17 +258,7 @@ const TrainingStats = ({ single }) => {
         {!isLoading ? (
           <div className={clsx("graph mt-40", { single })}>
             {!isEmpty(labels) ? (
-              <Graph
-                labels={labels}
-                datasets={datasets}
-                ticksCb={
-                  single
-                    ? (value) => (value > 100 ? "" : value)
-                    : (value, index, idx) => {
-                        return value > 100 ? "" : value + "%";
-                      }
-                }
-              />
+              <Graph labels={labels} datasets={datasets} />
             ) : (
               <div className="text-center">NO RECORDS FOUND!</div>
             )}

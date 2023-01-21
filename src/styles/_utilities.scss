@@ -158,10 +158,26 @@ a {
 }
 
 .table-container {
-  overflow-x: auto;
+  overflow: auto;
+  max-height: calc(100vh - 140px - 80px - 46px);
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar:horizontal {
+    width: 8px;
+  }
 
   &::-webkit-scrollbar-track {
     height: 4px;
+    width: 4px;
+    background-color: #fff;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #ccc;
   }
 
   table {

@@ -3,7 +3,7 @@ const secondsToReadable = (time) => {
   const seconds = time - minutes * 60;
   // const hours = Math.floor(time / 3600);
 
-  return `${minutes} min and ${seconds} seconds`;
+  return `${minutes} m & ${seconds} s`;
 };
 
 export default secondsToReadable;

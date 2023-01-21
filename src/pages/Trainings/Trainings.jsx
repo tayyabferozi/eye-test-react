@@ -5,7 +5,8 @@ import {
   getDocs,
   deleteDoc,
   doc,
-  getDoc,
+  query,
+  orderBy,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
@@ -14,6 +15,7 @@ import { db } from "../../firebase";
 import Section from "../../components/Section";
 import Button from "../../components/Button";
 import { toast } from "react-toastify";
+import secondsToReadable from "../../utils/secondsToReadable";
 import * as actionTypes from "../../context/actionTypes";
 import "./Trainings.scss";
 
@@ -57,7 +59,10 @@ const Training = () => {
     dataFetchedRef.current = true;
 
     setIsLoading(true);
-    const querySnapshot = await getDocs(collection(db, "trainings"));
+
+    const querySnapshot = (
+      await getDocs(query(collection(db, "trainings"), orderBy("date")))
+    ).docs;
     const sanitizedData = [];
     querySnapshot.forEach((doc) => {
       sanitizedData.push({ id: doc.id, ...doc.data() });
@@ -106,14 +111,21 @@ const Training = () => {
                           ).toLocaleDateString()}
                         </td>
                         <td>{el.eye}</td>
-                        <td>{(el.clickedDots / el.totalDots) * 100}%</td>
+                        <td>
+                          {((el.clickedDots / el.totalDots) * 100).toFixed(0)}%
+                        </td>
                         <td>
                           {el.durationOn === "dots"
-                            ? `${
-                                +el.maxTrainingDots *
-                                (el.responseTime + el.displayTime)
-                              }s`
-                            : `${el.maxTrainingDuration * 60}s`}
+                            ? `${secondsToReadable(
+                                (
+                                  +el.maxTrainingDots *
+                                  (el.responseTime + el.displayTime)
+                                ).toFixed(0)
+                              )}`
+                            : `${secondsToReadable(
+                                el.maxTrainingDuration * 60
+                              )}`}{" "}
+                          / {el.totalDots} dots
                         </td>
                         <td>
                           <div className="d-flex justify-content-center gap-10">

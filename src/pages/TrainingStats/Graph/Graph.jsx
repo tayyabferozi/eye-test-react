@@ -19,7 +19,7 @@ ChartJS.register(
   Legend
 );
 
-export default function App({ labels, datasets }) {
+export default function App({ labels, datasets, ticksCb = () => {} }) {
   const options = {
     maintainAspectRatio: false,
     barThickness: 20,
@@ -43,7 +43,8 @@ export default function App({ labels, datasets }) {
         stacked: true,
         ticks: {
           min: 0,
-          stepSize: 1,
+          stepSize: 10,
+          callback: ticksCb,
         },
         barPercentage: 2,
         categoryPercentage: 2,
