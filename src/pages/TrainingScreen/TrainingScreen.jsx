@@ -7,9 +7,17 @@ import { db } from "../../firebase";
 import useRootContext from "../../hooks/useRootContext";
 import splitNumber from "../../utils/splitNumber";
 import shuffle from "../../utils/shuffle";
+import wrong from "../../assets/audio/wrong.mp3";
+import right from "../../assets/audio/right.wav";
 import "./TrainingScreen.scss";
 
 const opacities = [0.33, 0.66, 1];
+
+const rightAudio = new Audio(right);
+const wrongAudio = new Audio(wrong);
+
+rightAudio.volume = 0.3;
+wrongAudio.volume = 0.3;
 
 const TrainingScreen = () => {
   const navigate = useNavigate();
@@ -122,7 +130,6 @@ const TrainingScreen = () => {
       currOpacityRef.current =
         (opacitiesRef.current && opacitiesRef.current[dotsShownRef.current]) ||
         1;
-      console.log(currOpacityRef.current);
       previewRef.current.style.opacity = currOpacityRef.current;
       confidenceRef.current.style.display = "block";
       isCircleClickedRef.current = false;
@@ -148,6 +155,7 @@ const TrainingScreen = () => {
 
   const circleClickHandler = () => {
     if (!isCircleClickedRef.current) {
+      rightAudio.play();
       isCircleClickedRef.current = true;
       dotsClickedRef.current += 1;
       dotsClickedDetailsRef.current.push(currOpacityRef.current);
@@ -156,6 +164,8 @@ const TrainingScreen = () => {
       else if (currOpacityRef.current === 0.66)
         optimalDotsClickedRef.current += 1;
       else if (currOpacityRef.current === 1) brightDotsClickedRef.current += 1;
+    } else {
+      wrongAudio.play();
     }
   };
 
@@ -185,6 +195,25 @@ const TrainingScreen = () => {
       stopTest();
     };
   }, []);
+
+  useEffect(() => {
+    const ev = (e) => {
+      if (e.target !== confidenceRef.current) {
+        wrongAudio.play();
+      }
+    };
+
+    const screenEl = trainingScreenRef.current;
+
+    if (screenEl) {
+      screenEl.addEventListener("click", ev);
+
+      return () => {
+        if (screenEl) screenEl.removeEventListener("click", ev);
+      };
+    }
+  }, [trainingScreenRef]);
+
   return (
     <>
       {/* <div className={clsx("exit-modal")}>
