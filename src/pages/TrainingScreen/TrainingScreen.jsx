@@ -9,21 +9,28 @@ import splitNumber from "../../utils/splitNumber";
 import shuffle from "../../utils/shuffle";
 import wrong from "../../assets/audio/wrong.mp3";
 import right from "../../assets/audio/right.wav";
+import end from "../../assets/audio/end.mp3";
+import start from "../../assets/audio/start.mp3";
 import "./TrainingScreen.scss";
 
 const opacities = [0.33, 0.66, 1];
 
 const rightAudio = new Audio(right);
 const wrongAudio = new Audio(wrong);
+const startAudio = new Audio(start);
+const endAudio = new Audio(end);
 
 rightAudio.volume = 0.3;
 wrongAudio.volume = 0.3;
+startAudio.volume = 0.3;
+endAudio.volume = 0.3;
 
 const TrainingScreen = () => {
   const navigate = useNavigate();
   const { form } = useRootContext();
 
   const isFormSavedRef = useRef(false);
+  const closeRef = useRef();
   const dotsShownRef = useRef(0);
   const dotsClickedRef = useRef(0);
   const dotsClickedDetailsRef = useRef([]);
@@ -70,6 +77,7 @@ const TrainingScreen = () => {
   );
 
   const endTest = useCallback(() => {
+    endAudio.play();
     stopTest();
     saveData();
     navigate("/", { replace: true });
@@ -85,6 +93,7 @@ const TrainingScreen = () => {
 
   const startTest = useCallback(() => {
     testState.current = "started";
+    startAudio.play();
 
     let totalTime = 0;
     const cycleTime = form.responseTime + form.displayTime;
@@ -148,6 +157,7 @@ const TrainingScreen = () => {
       }, form.displayTime * 1000);
 
       timeout1Ref.current = setTimeout(function () {
+        if (!isCircleClickedRef.current) wrongAudio.play();
         confidenceRef.current.style.display = "none";
       }, form.responseTime * 1000);
     }, cycleTime * 1000);
@@ -198,7 +208,7 @@ const TrainingScreen = () => {
 
   useEffect(() => {
     const ev = (e) => {
-      if (e.target !== confidenceRef.current) {
+      if (e.target !== confidenceRef.current && e.target !== closeRef.current) {
         wrongAudio.play();
       }
     };
@@ -230,10 +240,12 @@ const TrainingScreen = () => {
       <div id="training-screen" ref={trainingScreenRef}>
         <div
           onClick={() => {
+            endAudio.play();
             stopTest();
             navigate("/");
           }}
           className="close"
+          ref={closeRef}
         >
           ❌
         </div>
