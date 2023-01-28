@@ -12,6 +12,7 @@ import right from "../../assets/audio/right.wav";
 import end from "../../assets/audio/end.mp3";
 import start from "../../assets/audio/start.mp3";
 import "./TrainingScreen.scss";
+import { useState } from "react";
 
 const opacities = [0.33, 0.66, 1];
 
@@ -50,13 +51,15 @@ const TrainingScreen = () => {
   const lightDotsClickedRef = useRef(0);
   const optimalDotsClickedRef = useRef(0);
   const brightDotsClickedRef = useRef(0);
+  const [isGeneratingResults, setIsGeneratingResults] = useState(false);
 
   const saveData = useCallback(
     async function () {
       if (isFormSavedRef.current) return;
       isFormSavedRef.current = true;
       try {
-        await addDoc(collection(db, "trainings"), {
+        setIsGeneratingResults(true);
+        const docGenerated = await addDoc(collection(db, "trainings"), {
           ...form,
           totalDots: dotsShownRef.current,
           clickedDots: dotsClickedRef.current,
@@ -68,20 +71,23 @@ const TrainingScreen = () => {
           optimalDotsClicked: optimalDotsClickedRef.current,
           brightDotsClicked: brightDotsClickedRef.current,
         });
+        console.log(docGenerated);
+        navigate(`/training-stats/${docGenerated.id}`, { replace: true });
         toast.success("Data saved succesfully!");
       } catch (err) {
         console.log(err);
+      } finally {
+        // setIsGeneratingResults(false);
       }
     },
-    [form]
+    [form, navigate]
   );
 
   const endTest = useCallback(() => {
     endAudio.play();
     stopTest();
     saveData();
-    navigate("/", { replace: true });
-  }, [navigate, saveData]);
+  }, [saveData]);
 
   const stopTest = () => {
     testState.current = "stopped";
@@ -96,7 +102,7 @@ const TrainingScreen = () => {
     startAudio.play();
 
     let totalTime = 0;
-    const cycleTime = form.responseTime + form.displayTime;
+    const cycleTime = form.responseTime + form.delayTime;
 
     let splitted;
 
@@ -143,7 +149,7 @@ const TrainingScreen = () => {
       confidenceRef.current.style.display = "block";
       isCircleClickedRef.current = false;
 
-      const randomPercentage1 = Math.floor(Math.random() * 101);
+      const randomPercentage1 = Math.floor(Math.random() * (75 - 26 + 1) + 26);
       const randomPercentage2 = Math.floor(Math.random() * 101);
 
       previewWrapRef.current.style.left = randomPercentage1 + "%";
@@ -174,6 +180,7 @@ const TrainingScreen = () => {
       else if (currOpacityRef.current === 0.66)
         optimalDotsClickedRef.current += 1;
       else if (currOpacityRef.current === 1) brightDotsClickedRef.current += 1;
+      previewRef.current.style.display = "none";
     } else {
       wrongAudio.play();
     }
@@ -223,6 +230,14 @@ const TrainingScreen = () => {
       };
     }
   }, [trainingScreenRef]);
+
+  if (isGeneratingResults) {
+    return (
+      <div className="gen-res">
+        <div>Generating results...</div>
+      </div>
+    );
+  }
 
   return (
     <>
