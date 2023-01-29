@@ -53,24 +53,24 @@ const datasetStructure = [
     backgroundColor: "rgba(75, 192, 192, 1)",
     stack: "Stack 2",
   },
-  {
-    label: "Wrong (Low)",
-    data: [],
-    backgroundColor: "rgba(255, 99, 132, 0.33)",
-    stack: "Stack 0",
-  },
-  {
-    label: "Wrong (Optimal)",
-    data: [],
-    backgroundColor: "rgba(255, 99, 132, 0.66)",
-    stack: "Stack 1",
-  },
-  {
-    label: "Wrong (Easy)",
-    data: [],
-    backgroundColor: "rgba(255, 99, 132, 1)",
-    stack: "Stack 2",
-  },
+  // {
+  //   label: "Wrong (Low)",
+  //   data: [],
+  //   backgroundColor: "rgba(255, 99, 132, 0.33)",
+  //   stack: "Stack 0",
+  // },
+  // {
+  //   label: "Wrong (Optimal)",
+  //   data: [],
+  //   backgroundColor: "rgba(255, 99, 132, 0.66)",
+  //   stack: "Stack 1",
+  // },
+  // {
+  //   label: "Wrong (Easy)",
+  //   data: [],
+  //   backgroundColor: "rgba(255, 99, 132, 1)",
+  //   stack: "Stack 2",
+  // },
 ];
 
 const TrainingStats = ({ single }) => {
@@ -197,15 +197,15 @@ const TrainingStats = ({ single }) => {
           (element.brightDotsClicked / element.brightDotsTotal) * 100
         );
 
-        datasetsData[3].data.push(
-          (element.lightDotsMissed / element.lightDotsTotal) * 100
-        );
-        datasetsData[4].data.push(
-          (element.optimalDotsMissed / element.optimalDotsTotal) * 100
-        );
-        datasetsData[5].data.push(
-          (element.brightDotsMissed / element.brightDotsTotal) * 100
-        );
+        // datasetsData[3].data.push(
+        //   (element.lightDotsMissed / element.lightDotsTotal) * 100
+        // );
+        // datasetsData[4].data.push(
+        //   (element.optimalDotsMissed / element.optimalDotsTotal) * 100
+        // );
+        // datasetsData[5].data.push(
+        //   (element.brightDotsMissed / element.brightDotsTotal) * 100
+        // );
       }
     }
 
@@ -311,11 +311,11 @@ const TrainingStats = ({ single }) => {
                 labels={labels}
                 datasets={datasets}
                 ticksCb={
-                  single
-                    ? (value) => (value > 100 ? "" : value)
-                    : (value, index, idx) => {
-                        return value > 100 ? "" : value + "%";
-                      }
+                  // single
+                  //   ? (value) => (value > 100 ? "" : value) :
+                  (value, index, idx) => {
+                    return value > 100 ? "" : value + "%";
+                  }
                 }
               />
             ) : (

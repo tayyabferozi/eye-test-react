@@ -194,7 +194,7 @@ const TrainingScreen = () => {
   useEffect(() => {
     const elem = trainingScreenRef.current;
 
-    if (!elem.current) return;
+    if (!elem) return;
 
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
