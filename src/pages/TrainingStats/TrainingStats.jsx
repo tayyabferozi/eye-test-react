@@ -188,13 +188,18 @@ const TrainingStats = ({ single }) => {
         const element = aggregatedData[key];
         labelsData.push(key);
         datasetsData[0].data.push(
-          (element.lightDotsClicked / element.lightDotsTotal) * 100
+          ((element.lightDotsClicked / element.lightDotsTotal) * 100).toFixed(0)
         );
         datasetsData[1].data.push(
-          (element.optimalDotsClicked / element.optimalDotsTotal) * 100
+          (
+            (element.optimalDotsClicked / element.optimalDotsTotal) *
+            100
+          ).toFixed(0)
         );
         datasetsData[2].data.push(
-          (element.brightDotsClicked / element.brightDotsTotal) * 100
+          ((element.brightDotsClicked / element.brightDotsTotal) * 100).toFixed(
+            0
+          )
         );
 
         // datasetsData[3].data.push(

@@ -188,7 +188,9 @@ const NewTraining = () => {
           </div>
 
           <div className="d-flex justify-content-center">
-            <div className="btns">
+            <div
+              className={clsx("btns", !(stepState < stepComps.length) && "big")}
+            >
               <button onClick={decStep}>Previous</button>
               {/* {stepState < stepComps.length && ( */}
               <button
