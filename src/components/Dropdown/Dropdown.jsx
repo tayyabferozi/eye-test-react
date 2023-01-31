@@ -6,6 +6,7 @@ import useOnClickOutside from "../../hooks/useOnClickOutside";
 import "./Dropdown.scss";
 
 const Dropdown = ({
+  className,
   withCheckmarks,
   defaultValue,
   options,
@@ -53,7 +54,10 @@ const Dropdown = ({
   return (
     <div className="dropdown-big" ref={dropdownRef}>
       {defaultValue && !notBig ? (
-        <div className="dropdown-big__main" onClick={toggleDrawer}>
+        <div
+          className={clsx("dropdown-big__main", className)}
+          onClick={toggleDrawer}
+        >
           <div className="text">{value}</div>
           <img
             className="icon"

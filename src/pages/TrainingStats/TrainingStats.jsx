@@ -76,6 +76,7 @@ const datasetStructure = [
 const TrainingStats = ({ single }) => {
   const { id } = useParams();
   const [labels, setLabels] = useState([]);
+  const [selectedEye, setSelectedEye] = useState("left");
   const [selectedDate, setSelectedDate] = useState("");
   const [datasets, setDatasets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -84,6 +85,10 @@ const TrainingStats = ({ single }) => {
 
   const dateChangeHandler = (value) => {
     setSelectedDate(value);
+  };
+
+  const statChangeHandler = (value) => {
+    setSelectedEye(value === "Left Eye" ? "left" : "right");
   };
 
   const getSelectValues = useCallback(async () => {
@@ -244,7 +249,8 @@ const TrainingStats = ({ single }) => {
       const q = query(
         docRef,
         where("date", ">=", start),
-        where("date", "<=", end)
+        where("date", "<=", end),
+        where("eye", "==", selectedEye)
       );
 
       setIsLoading(true);
@@ -252,7 +258,7 @@ const TrainingStats = ({ single }) => {
       setData(querySnapshot, true);
       setIsLoading(false);
     },
-    [setData]
+    [setData, selectedEye]
   );
 
   const filterHandler = () => {
@@ -295,8 +301,19 @@ const TrainingStats = ({ single }) => {
               <div className="d-flex justify-content-center align-items-center p-3 gap-3">
                 <div className="dropdowns">
                   <Dropdown
+                    className="short"
                     withCheckmarks
-                    labelText="Select Month"
+                    labelText="Select Eye"
+                    defaultValue="Left Eye"
+                    options={[
+                      { label: "Left Eye", value: "Left Eye" },
+                      { label: "Right Eye", value: "Right Eye" },
+                    ]}
+                    onChoose={statChangeHandler}
+                  />
+                  <Dropdown
+                    withCheckmarks
+                    labelText="Select date"
                     defaultValue="Select date"
                     options={dateSelectionState}
                     onChoose={dateChangeHandler}

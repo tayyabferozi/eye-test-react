@@ -7,6 +7,7 @@ import {
   doc,
   query,
   orderBy,
+  where,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
@@ -17,15 +18,24 @@ import Button from "../../components/Button";
 import { toast } from "react-toastify";
 import secondsToReadable from "../../utils/secondsToReadable";
 import * as actionTypes from "../../context/actionTypes";
+import Selector from "../../components/Selector";
+import SelectorItem from "../../components/SelectorItem";
 import "./Trainings.scss";
 
 const Training = () => {
   const navigate = useNavigate();
   const { dispatch } = useRootContext();
 
+  const [form, setForm] = useState({ eye: "left" });
   const dataFetchedRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState([]);
+
+  const inputChangeHandler = (e) => {
+    const { name, value } = e.target;
+
+    setForm((prevState) => ({ ...prevState, [name]: value }));
+  };
 
   const startSaved = (data) => {
     delete data.id;
@@ -54,14 +64,20 @@ const Training = () => {
     getData();
   };
 
-  const getData = useCallback(async () => {
-    if (dataFetchedRef.current) return;
+  const getData = useCallback(async (form) => {
+    // if (dataFetchedRef.current) return;
     dataFetchedRef.current = true;
 
     setIsLoading(true);
 
     const querySnapshot = (
-      await getDocs(query(collection(db, "trainings"), orderBy("date")))
+      await getDocs(
+        query(
+          collection(db, "trainings"),
+          orderBy("date", "desc"),
+          where("eye", "==", form.eye)
+        )
+      )
     ).docs;
     const sanitizedData = [];
     querySnapshot.forEach((doc) => {
@@ -72,14 +88,37 @@ const Training = () => {
   }, []);
 
   useEffect(() => {
-    getData();
-  }, [getData]);
+    getData(form);
+  }, [getData, form]);
 
   return (
     <Section id="training">
       <div className="main-layout">
         <div>
-          <h3 className="mb-30 text-center">Trainings</h3>
+          <div className="d-flex justify-content-between align-items-center">
+            <div></div>
+            <h3 className="mb-30 text-center">Trainings</h3>
+            <div>
+              <Selector>
+                <SelectorItem
+                  name="eye"
+                  value="left"
+                  checked={form.eye === "left"}
+                  onChange={inputChangeHandler}
+                >
+                  Left
+                </SelectorItem>
+                <SelectorItem
+                  name="eye"
+                  value="right"
+                  checked={form.eye === "right"}
+                  onChange={inputChangeHandler}
+                >
+                  right
+                </SelectorItem>
+              </Selector>
+            </div>
+          </div>
 
           {isLoading ? (
             <h6 className="text-center">Loading...</h6>
