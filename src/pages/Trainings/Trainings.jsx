@@ -61,7 +61,7 @@ const Training = () => {
     setIsLoading(true);
     await deleteDoc(doc(db, "trainings", id));
     toast.success("Item deleted succesfully!");
-    getData();
+    getData(form);
   };
 
   const getData = useCallback(async (form) => {
