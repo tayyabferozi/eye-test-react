@@ -12,6 +12,25 @@
   height: 100vh;
   position: relative;
 
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 25%;
+    background-color: #000;
+    z-index: 1;
+  }
+
+  &::before {
+    left: 0;
+  }
+
+  &::after {
+    right: 0;
+  }
+
   .close {
     position: absolute;
     left: 0;
@@ -41,7 +60,7 @@
   }
 
   .preview {
-    position: absolute;
+    position: fixed;
     top: 100%;
     left: 0;
     transform: translateY(-100%);

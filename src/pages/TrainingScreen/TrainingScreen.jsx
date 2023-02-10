@@ -154,7 +154,9 @@ const TrainingScreen = () => {
 
       previewWrapRef.current.style.left = randomPercentage1 + "%";
       previewWrapRef.current.style.top = randomPercentage2 + "%";
-      previewWrapRef.current.style.transform = `translate(-${randomPercentage1}%, -${randomPercentage2}%)`;
+      // previewWrapRef.current.style.transform = `translate(-${randomPercentage1}%, calc(0 - 50%))`;
+      // previewWrapRef.current.style.transform = `translate(-${randomPercentage1}%, -50%)`;
+      previewWrapRef.current.style.transform = `translate(-50%, -50%)`;
 
       dotsShownRef.current += 1;
 
@@ -267,7 +269,14 @@ const TrainingScreen = () => {
 
         <div className="small-dot"></div>
 
-        <div className="preview" ref={previewWrapRef}>
+        <div
+          className="preview"
+          style={{
+            width: `${form.stimulusSize}mm`,
+            height: `${form.stimulusSize}mm`,
+          }}
+          ref={previewWrapRef}
+        >
           <div
             ref={previewRef}
             className="preview-icon"
